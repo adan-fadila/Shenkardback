@@ -21,5 +21,10 @@ namespace Card_package
             get;
             set;
         }
+        string Image
+        {
+            get;
+            set;
+        }
     }
 }

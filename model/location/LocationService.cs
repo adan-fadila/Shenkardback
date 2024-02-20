@@ -19,7 +19,7 @@ namespace Location_package
         {
             if (instance == null)
             {
-                return new LocationService();
+                instance = new LocationService();
             }
             return instance;
         }

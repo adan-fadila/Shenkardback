@@ -74,10 +74,11 @@ public class Server
                     if (waitingPlayerId == -1)
                     {
                         waitingPlayerId = playerId;
+                        
                     }
                     else
                     {
-                        if (playerId != waitingPlayerId)
+                        if (playerId != waitingPlayerId && waitingPlayerId != -1)
                         {
                             StartGame(waitingPlayerId, playerId, clients[waitingPlayerId], clients[playerId]);
                         }
@@ -107,9 +108,9 @@ public class Server
         {
             player1 = GetPlayerData(game.Players[0]),
             player2 = GetPlayerData(game.Players[1]),
-            locationData1 = GetLocationData(game.locations[0],player1,player2),
-            locationData2 = GetLocationData(game.locations[1],player1,player2),
-            locationData3 = GetLocationData(game.locations[2],player1,player2),
+            locationData1 = GetLocationData(game.locations[0], player1, player2),
+            locationData2 = GetLocationData(game.locations[1], player1, player2),
+            locationData3 = GetLocationData(game.locations[2], player1, player2),
         };
         string serializedGameData = JsonSerializer.Serialize(gameData);
 
@@ -144,20 +145,21 @@ public class Server
         }
         return HandCards;
     }
-    private LocationData GetLocationData(ILocation location,int player1,int player2)
+    private LocationData GetLocationData(ILocation location, int player1, int player2)
     {
         LocationData locationData = new LocationData
         {
             Name = location.Name,
             Desc = location.Desc,
-            };
-            if(location.zone1.Player == player1){
-                locationData.Player1Zone = GetPlayerCards(location.zone1.GetCards().ToList());
-                locationData.Player2Zone = GetPlayerCards(location.zone2.GetCards().ToList());
-                locationData.Player1LocatinScore = location.zone1.total;
-                locationData.Player2LocatinScore = location.zone2.total;
-            }
-            return locationData;
+        };
+        if (location.zone1.Player == player1)
+        {
+            locationData.Player1Zone = GetPlayerCards(location.zone1.GetCards().ToList());
+            locationData.Player2Zone = GetPlayerCards(location.zone2.GetCards().ToList());
+            locationData.Player1LocatinScore = location.zone1.total;
+            locationData.Player2LocatinScore = location.zone2.total;
+        }
+        return locationData;
     }
     // private AskForGameMessage ReadAskForGameMessage(NetworkStream stream)
     // {
