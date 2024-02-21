@@ -6,24 +6,27 @@ using Player_package;
 
 class GameController
 {
-    private Game game;
     private GameService gameService = GameService.getInstance();
-    
-    public void putCardToLocation(Player player, Location location, ICard card)
+
+    public Game putCardToLocation(Player player, ILocation location, ICard card, Game game)
     {
-        gameService.putCardToLocation(player, location, card, game);
+        return gameService.putCardToLocation(player, location, card, game);
 
     }
 
-    // public void endTurn()
-    public Game askForGame(int id1,int id2)
+
+    public void endTurn(Game game)
     {
-        this.game = gameService.askForGame(id1,id2);
-        return game;
+        game.endTurn();
     }
-    public List<int> startBattle()
+    public Game askForGame(int id1, int id2)
+    {
+        return gameService.askForGame(id1, id2);
+
+    }
+    public List<int> startBattle(Game game)
     {
         return gameService.startBattle(game);
     }
- 
+
 }

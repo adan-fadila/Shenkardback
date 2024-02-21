@@ -58,6 +58,29 @@ namespace Location_package
             if (this.zone1.Player == player) { return zone1; }
             return zone2;
         }
+         string ZonePrint(Zone zone)
+        {
+            if (zone != null)
+            {
+                string result = "";
+                foreach (ICard card in zone.GetCards())
+                {
+                    result += card.ToString() + "\n ";
+                }
+                // Remove the last comma and space
+                if (zone.GetCards().Count > 0)
+                {
+                    result = result.Substring(0, result.Length - 2);
+                }
+                result += " Total:" + zone.total;
+                return result;
+            }
+            return " no Cards,";
+        }
+        public override string ToString()
+        {
+            return $"Location Name: {this.Name} LocationDesc: {this.Desc} LocationZone1: {this.ZonePrint(zone1)} LocationZone2: {this.ZonePrint(zone2)}";
+        }
 
     }
     public class Zone

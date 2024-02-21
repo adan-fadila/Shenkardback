@@ -14,7 +14,7 @@ public class Server
 {
     private TcpListener listener;
     Dictionary<int, TcpClient> clients = new Dictionary<int, TcpClient>();
-    Dictionary<Game, List<int>> games = new Dictionary<Game, List<int>>();
+    Dictionary<List<int>, Game> games = new Dictionary<List<int>, Game>();
     bool isRunning = false;
     int waitingPlayerId = -1;
     private readonly object lockObject = new object();
@@ -59,8 +59,34 @@ public class Server
                 {
                     clients.Remove(disconnectedPlayerId);
                     // Handle any other cleanup tasks related to the disconnected client
-                    Game gameToRemove = games.FirstOrDefault(pair => pair.Value.Contains(disconnectedPlayerId)).Key;
-                    games.Remove(gameToRemove);
+                    try
+                    {
+                        var keyWithplayerId = games.Keys.FirstOrDefault(key => key.Contains(disconnectedPlayerId));
+                        if (keyWithplayerId != null)
+                        {
+                            // Get the corresponding Game object
+                            //end the game to the other Player !!!!!!!!!!!!!!!!!!!!!! not fineshed
+                            Game gameToRemove = games[keyWithplayerId];
+                            if (gameToRemove.Players[0].id == disconnectedPlayerId)
+                            {
+                                NetworkStream otherPlayStream = clients[gameToRemove.Players[1].id].GetStream();
+                            }
+                            else
+                            {
+                                NetworkStream otherPlayStream = clients[gameToRemove.Players[0].id].GetStream();
+                            }
+
+                            // Now you can use the 'game' object as needed 
+
+                            games.Remove(keyWithplayerId);
+                        }
+                       ;
+                    }
+                    catch (System.Exception)
+                    {
+
+                        Console.WriteLine("no game  for this client");
+                    }
                 }
                 break; // Exit the loop
             }
@@ -84,7 +110,9 @@ public class Server
                     if (waitingPlayerId == -1)
                     {
                         lock (lockObject) { waitingPlayerId = playerId; }
-
+                        GameData? gameData = null;
+                        string nullGame = JsonSerializer.Serialize(gameData);
+                        SendMessageToClient(clients[playerId], nullGame);
 
                     }
                     else
@@ -103,6 +131,7 @@ public class Server
 
                     break;
                 case "EndTurn":
+            
 
                     break;
                 default:
@@ -111,11 +140,11 @@ public class Server
         }
     }
 
-    public void StartGame(int player1, int player2, TcpClient client1, TcpClient client2)
+    private void StartGame(int player1, int player2, TcpClient client1, TcpClient client2)
     {
         Console.WriteLine("startGame");
         Game game = gameController.askForGame(player1, player2);
-        games.Add(game, new List<int>() { player1, player2 });
+        games.Add(new List<int>() { player1, player2 }, game);
         GameData gameData = new GameData()
         {
             player1 = GetPlayerData(game.Players[0]),
@@ -124,9 +153,7 @@ public class Server
             locationData2 = GetLocationData(game.locations[1], player1, player2),
             locationData3 = GetLocationData(game.locations[2], player1, player2),
         };
-        Console.WriteLine("GameData: " + gameData.player1.PlayeName);
         string serializedGameData = JsonSerializer.Serialize(gameData);
-        Console.WriteLine(serializedGameData);
         // Send the serialized game data to both players
         SendMessageToClient(client1, serializedGameData);
         SendMessageToClient(client2, serializedGameData);
@@ -206,6 +233,12 @@ public class Server
 
     }
 
+    private void EndTurn()
+    {
+
+    }
+
+
     public void Stop()
     {
         listener.Stop();
@@ -219,6 +252,12 @@ public class ServerMain
 
         Server server = new Server(8888);
         server.Start();
+        // GameController gameController = new GameController();
+        // Game game = gameController.askForGame(1,2);
+        // Console.WriteLine(game);
+        // gameController.putCardToLocation(game.Players[1],(Location)game.locations[1],game.Players[1].displayedCards[0]);
+        // Console.WriteLine("---------------------------------------------");
+        // Console.WriteLine(game);
     }
 }
 

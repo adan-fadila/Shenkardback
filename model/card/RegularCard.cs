@@ -25,7 +25,7 @@ namespace Card_package
         }
         public override string ToString()
         {
-            return $"CardId: {this.id}";
+            return $"CardId: {this.id} CardName:{this.Name} CardDesc:{this.Desc} CardPower: {this.Power} CardCost:{this.Cost}";
         }
 
     }

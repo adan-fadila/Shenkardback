@@ -50,7 +50,7 @@ namespace Location_package
 
         }
         /*put card on location and update location points*/
-        public void putCardToLocation(Player player, Location location, ICard card, Game game)
+        public void putCardToLocation(Player player, ILocation location, ICard card, Game game)
         {
             location.playCard(player, card);
             location.applyEffect(game);

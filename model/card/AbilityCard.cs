@@ -32,10 +32,9 @@ namespace Card_package
             // Call the ability strategy to activate the ability
             this.Ability.ActivateAbility();
         }
-         public override string ToString()
+       public override string ToString()
         {
-            return $"CardId: {this.id}";
+            return $"CardId: {this.id} CardName:{this.Name} CardDesc:{this.Desc} CardPower: {this.Power} CardCost:{this.Cost}";
         }
-
     }
 }

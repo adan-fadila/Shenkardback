@@ -28,9 +28,11 @@ namespace Game_package
             }
             return instance;
         }
-        public void putCardToLocation(Player player, Location location, ICard card, Game game)
+        public Game putCardToLocation(Player player, ILocation location, ICard card, Game game)
         {
             locationService.putCardToLocation(player, location, card, game);
+            return game;
+           
         }
         public bool endTurn(Game game)
         {
