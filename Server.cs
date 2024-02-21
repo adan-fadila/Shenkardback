@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Card_package;
 using Game_package;
 using Location_package;
@@ -17,8 +14,11 @@ public class Server
 {
     private TcpListener listener;
     Dictionary<int, TcpClient> clients = new Dictionary<int, TcpClient>();
+    Dictionary<Game, List<int>> games = new Dictionary<Game, List<int>>();
     bool isRunning = false;
     int waitingPlayerId = -1;
+    private readonly object lockObject = new object();
+
 
     private PlayerController playerController = new PlayerController();
     private GameController gameController = new GameController();
@@ -49,6 +49,21 @@ public class Server
             NetworkStream stream = client.GetStream();
             byte[] buffer = new byte[1024];
             int bytesRead = stream.Read(buffer, 0, buffer.Length);
+            if (bytesRead == 0)
+            {
+                // If bytesRead is 0, it means the client has disconnected
+                Console.WriteLine("Client disconnected.");
+                // Remove the disconnected client from the dictionary
+                int disconnectedPlayerId = clients.FirstOrDefault(x => x.Value == client).Key;
+                if (disconnectedPlayerId != 0)
+                {
+                    clients.Remove(disconnectedPlayerId);
+                    // Handle any other cleanup tasks related to the disconnected client
+                    Game gameToRemove = games.FirstOrDefault(pair => pair.Value.Contains(disconnectedPlayerId)).Key;
+                    games.Remove(gameToRemove);
+                }
+                break; // Exit the loop
+            }
             string message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
 
             // Split the message into parts using the '|' delimiter
@@ -57,43 +72,40 @@ public class Server
             // Determine the message type
             string messageType = parts[0];
 
-            // Process the message based on its type
             switch (messageType)
             {
                 case "LOGIN":
-                    // Extract username and password from parts[1] and parts[2] respectively
                     string username = parts[1];
                     string password = parts[2];
                     HandleLogin(username, password, client);
-                    // Process the login request
-                    // Validate the username and password, send back player ID, etc.
                     break;
                 case "GAME_REQUEST":
-                    // Extract player ID from parts[1]
                     int playerId = int.Parse(parts[1]);
                     if (waitingPlayerId == -1)
                     {
-                        waitingPlayerId = playerId;
-                        
+                        lock (lockObject) { waitingPlayerId = playerId; }
+
+
                     }
                     else
                     {
                         if (playerId != waitingPlayerId && waitingPlayerId != -1)
                         {
-                            StartGame(waitingPlayerId, playerId, clients[waitingPlayerId], clients[playerId]);
+                            int player1Id = waitingPlayerId;
+                            int player2Id = playerId;
+                            waitingPlayerId = -1; // Reset waiting player ID for the next game
+
+                            // Ensure to pass the correct player IDs to StartGame
+                            StartGame(player1Id, player2Id, clients[player1Id], clients[player2Id]);
+
                         }
                     }
-                    // Process the game request
-                    // Start a new game with the specified player ID, etc.
+
                     break;
-                case "GAME_MOVE":
-                    // Extract the move from parts[1]
-                    // string move = parts[1];
-                    // Process the game move
-                    // Update the game state based on the move received, etc.
+                case "EndTurn":
+
                     break;
                 default:
-                    // Handle unknown message types or errors
                     break;
             }
         }
@@ -101,10 +113,10 @@ public class Server
 
     public void StartGame(int player1, int player2, TcpClient client1, TcpClient client2)
     {
-        // Create and initialize the game instance
+        Console.WriteLine("startGame");
         Game game = gameController.askForGame(player1, player2);
-        // Serialize the game data
-        GameData gameData = new GameData
+        games.Add(game, new List<int>() { player1, player2 });
+        GameData gameData = new GameData()
         {
             player1 = GetPlayerData(game.Players[0]),
             player2 = GetPlayerData(game.Players[1]),
@@ -112,8 +124,9 @@ public class Server
             locationData2 = GetLocationData(game.locations[1], player1, player2),
             locationData3 = GetLocationData(game.locations[2], player1, player2),
         };
+        Console.WriteLine("GameData: " + gameData.player1.PlayeName);
         string serializedGameData = JsonSerializer.Serialize(gameData);
-
+        Console.WriteLine(serializedGameData);
         // Send the serialized game data to both players
         SendMessageToClient(client1, serializedGameData);
         SendMessageToClient(client2, serializedGameData);
@@ -131,6 +144,10 @@ public class Server
     private List<CardData> GetPlayerCards(List<ICard> cards)
     {
         List<CardData> HandCards = new List<CardData>();
+        if (cards == null || cards.Count == 0)
+        {
+            return HandCards;
+        }
         foreach (ICard card in cards)
         {
             CardData cardData = new CardData
@@ -154,17 +171,18 @@ public class Server
         };
         if (location.zone1.Player == player1)
         {
-            locationData.Player1Zone = GetPlayerCards(location.zone1.GetCards().ToList());
-            locationData.Player2Zone = GetPlayerCards(location.zone2.GetCards().ToList());
+            locationData.Player1Zone = GetPlayerCards([.. location.zone1.GetCards()]);
+
+            locationData.Player2Zone = GetPlayerCards([.. location.zone2.GetCards()]);
+
+
+
             locationData.Player1LocatinScore = location.zone1.total;
             locationData.Player2LocatinScore = location.zone2.total;
         }
         return locationData;
     }
-    // private AskForGameMessage ReadAskForGameMessage(NetworkStream stream)
-    // {
-    //     // Implement reading AskForGameMessage
-    // }
+
 
 
     private void SendMessageToClient(TcpClient client, string message)
@@ -178,7 +196,6 @@ public class Server
 
         NetworkStream stream = client.GetStream();
 
-        // Implement login validation logic here
         int playerId = playerController.validatePlayer(username, password);
         if (playerId != -1)
         {
@@ -199,9 +216,9 @@ public class ServerMain
 {
     static void Main(string[] args)
     {
+
         Server server = new Server(8888);
         server.Start();
-
     }
 }
 

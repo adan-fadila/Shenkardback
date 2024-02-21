@@ -20,16 +20,21 @@ namespace Game_package
       Players[0] = player1;
       Players[1] = player2;
       this.locations = locations;
+      foreach (ILocation location in locations)
+      {
+        location.setPlayer(player1.id, player2.id);
+      }
       this.turn = 0;
     }
     public bool endTurn()
     {
-      if (this.turn < numOfTurns){
+      if (this.turn < numOfTurns)
+      {
 
-         this.turn++;
-         return true;
+        this.turn++;
+        return true;
       }
-       return false;
+      return false;
     }
 
     public List<int> getWinner()
@@ -37,7 +42,11 @@ namespace Game_package
 
       return this.battleStrategy.battle(this);
     }
+        public override string ToString()
+        {
+            return $"Game - Player1: {this.Players[0]} , - Player2: {this.Players[1]} \n- Locations: {this.locations[0].id},{this.locations[1].id},{this.locations[1].id}";
+        }
 
 
-  }
+    }
 }

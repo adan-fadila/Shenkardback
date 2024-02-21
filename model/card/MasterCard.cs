@@ -7,6 +7,10 @@ namespace Card_package
         public MasterCard(int id,string Name, string Desc, int Power, string Ability,string Image) : base(id,Name, Desc, 0, Power, Ability, Image)
         {
         }
+         public override string ToString()
+        {
+            return $"CardId: {this.id}";
+        }
     }
 
 }

@@ -25,11 +25,5 @@ class GameController
     {
         return gameService.startBattle(game);
     }
-    public void SetWaitingPlayer(int playerId)
-    {
-        gameService.SetWaitingPlayer(playerId);
-    }
-     public bool IsWaitingPlayerAvailable(){
-        return gameService.IsWaitingPlayerAvailable();
-     }
+ 
 }

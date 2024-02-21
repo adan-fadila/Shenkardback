@@ -17,7 +17,7 @@ namespace Location_package
             if(locationBattleStrategyName == "ReplaceCardsStrategy"){
                locationBattleStrategy= new LocationReplaceCardsStrategy() ;
             }
-            return new Location(name,desc,locationBattleStrategy);
+            return new Location(id,name,desc,locationBattleStrategy);
         }
     }
 }
