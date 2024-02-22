@@ -9,7 +9,7 @@ namespace Player_package
         public string name { get; }
         public int id { get; }
         // public Deck deck { get; }
-        public int energy;
+        public int energy { get; set; }
         public List<ICard> displayedCards { get; set; }
 
         public ICard[] cards { get; private set; }

@@ -131,7 +131,23 @@ public class Server
 
                     break;
                 case "EndTurn":
-            
+
+                    try
+                    {
+                        string serializedGameData = parts[1];
+                        List<PlayedCard>? playedCards = JsonSerializer.Deserialize<List<PlayedCard>>(serializedGameData);
+                        Console.WriteLine("Played Cards: " + serializedGameData);
+
+                        int Id = GetKeyByValue(client);
+                        List<int>? playersIds = games.Keys.FirstOrDefault(key => key.Contains(Id));
+                        Game game = games[playersIds];
+                        EndTurn(game, playedCards, client);
+
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("HandleClient,EndTurn: " + e.Message);
+                    }
 
                     break;
                 default:
@@ -145,18 +161,28 @@ public class Server
         Console.WriteLine("startGame");
         Game game = gameController.askForGame(player1, player2);
         games.Add(new List<int>() { player1, player2 }, game);
+        string serializedGameData = setGameData(game, player1, player2);
+        // Send the serialized game data to both players
+        SendMessageToClient(client1, serializedGameData);
+        SendMessageToClient(client2, serializedGameData);
+    }
+    string setGameData(Game game, int player1, int player2)
+    {
+
         GameData gameData = new GameData()
         {
             player1 = GetPlayerData(game.Players[0]),
             player2 = GetPlayerData(game.Players[1]),
-            locationData1 = GetLocationData(game.locations[0], player1, player2),
-            locationData2 = GetLocationData(game.locations[1], player1, player2),
-            locationData3 = GetLocationData(game.locations[2], player1, player2),
+            locationDatas = new List<LocationData>()
+
         };
+        foreach (ILocation location in game.locations)
+        {
+            gameData.locationDatas.Add(GetLocationData(location, player1, player2));
+
+        }
         string serializedGameData = JsonSerializer.Serialize(gameData);
-        // Send the serialized game data to both players
-        SendMessageToClient(client1, serializedGameData);
-        SendMessageToClient(client2, serializedGameData);
+        return serializedGameData;
     }
     private PlayerData GetPlayerData(Player player)
     {
@@ -165,6 +191,7 @@ public class Server
             PlayeId = player.id,
             PlayeName = player.name,
             HandCards = GetPlayerCards(player.displayedCards),
+            Energy = player.energy
         };
         return player1;
     }
@@ -183,7 +210,9 @@ public class Server
                 Name = card.Name,
                 Desc = card.Desc,
                 Cost = card.Cost,
-                Power = card.Power
+                Power = card.Power,
+                Image = card.Image
+
             };
             HandCards.Add(cardData);
         }
@@ -233,8 +262,74 @@ public class Server
 
     }
 
-    private void EndTurn()
+    private void EndTurn(Game game, List<PlayedCard> playedCards, TcpClient client)
     {
+        game.numOfPlayersHaveEndedTurn++;
+        int playerId = GetKeyByValue(client);
+        if (playerId == -1)
+        {
+            Console.WriteLine("client not founded");
+        }
+        Player player = getPlayerbyId(game, playerId);
+        foreach (PlayedCard card in playedCards)
+        {
+            gameController.putCardToLocation(player, card.locationData.Id, card.cardData.id, game);
+        }
+        if (game.numOfPlayersHaveEndedTurn == game.Players.Length)
+        {
+            /**************************/
+            /*check if game ended*/
+            /**************************/
+            if (gameController.endTurn(game))
+            {
+                string gameData = setGameData(game, game.Players[0].id, game.Players[1].id);
+                List<int>? keyWithplayerId = games.Keys.FirstOrDefault(key => key.Contains(GetKeyByValue(client)));
+                try
+                {
+                    foreach (int id in keyWithplayerId)
+                    {
+
+                        TcpClient client1 = clients[id];
+                        SendMessageToClient(client1, gameData);
+
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("End Turn Exception" + e);
+                }
+                /********************/
+                /***need completeing***/
+            }else{
+                gameController.startBattle(game);
+            }
+
+
+        }
+
+
+    }
+    int GetKeyByValue(TcpClient client)
+    {
+        // Iterate through the dictionary
+        foreach (var pair in clients)
+        {
+            // If the current value matches the desired value, return its key
+            if (pair.Value.Equals(client))
+            {
+                return pair.Key;
+            }
+        }
+        // If the value is not found, return a default value
+        return -1; // Or throw an exception, depending on your requirements
+    }
+    private Player getPlayerbyId(Game game, int id)
+    {
+        if (game.Players[0].id == id)
+        {
+            return game.Players[0];
+        }
+        return game.Players[1];
 
     }
 
