@@ -371,7 +371,7 @@ public class ServerMain
         // GameController gameController = new GameController();
         // Game game = gameController.askForGame(1,2);
         // Console.WriteLine(game);
-        // gameController.putCardToLocation(game.Players[1],(Location)game.locations[1],game.Players[1].displayedCards[0]);
+        // gameController.putCardToLocation(game.Players[1],game.locations[1].id,game.Players[1].displayedCards[0].id,game);
         // Console.WriteLine("---------------------------------------------");
         // Console.WriteLine(game);
     }

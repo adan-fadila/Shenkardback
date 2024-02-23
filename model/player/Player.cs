@@ -20,19 +20,26 @@ namespace Player_package
 
             this.id = id;
             this.name = name;
-            // deck = new Deck();
             displayedCards = new List<ICard>();
             this.cards = cards;
+            //if player can choose cards to his deck
+            //not needed now
             if (hasDeck == false)
             {
                 // deck.setDefaultDeck();
             }
             energy = 3;
         }
+
+
         public ICard[] GetCards()
         {
             return this.cards;
         }
+
+
+
+
         string HandPrint()
         {
             if (displayedCards != null)
@@ -42,7 +49,6 @@ namespace Player_package
                 {
                     result += card.ToString() + "\n ";
                 }
-                // Remove the last comma and space
                 if (displayedCards.Count > 0)
                 {
                     result = result.Substring(0, result.Length - 2);
@@ -58,21 +64,5 @@ namespace Player_package
 
 
     }
-    // public class Deck
-    // {
-    //     private CardService cardService = CardService.getInstance();
-
-    //     static int numOfMasterCards = 1;
-    //     static int numOfAllCards = 3;
-    //     public ICard[] cards { get;private set; }
-    //     public Deck(){
-    //         this.cards = new ICard[numOfAllCards];
-    //     }
-    //     // public void setDefaultDeck()
-    //     // {
-    //     //     this.cards = this.cardService.getRandomCards(1, 1, numOfMasterCards);
-
-    //     // }
-
-    // }
+ 
 }
