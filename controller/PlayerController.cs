@@ -24,6 +24,9 @@ class PlayerController
     public int validatePlayer(string username, string password){
         return playerService.validatePlayer(username,password);
     }
+     public int validateAdmin(string username, string password){
+        return playerService.validateAdmin(username,password);
+    }
     public Player GetPlayer(string name){
         return playerService.GetPlayer(name);
     }

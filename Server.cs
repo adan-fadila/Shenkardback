@@ -105,6 +105,11 @@ public class Server
                     string password = parts[2];
                     HandleLogin(username, password, client);
                     break;
+                case "AdminLOGIN":
+                     username = parts[1];
+                     password = parts[2];
+                    HandleAdminLogin(username, password, client);
+                    break;
                 case "GAME_REQUEST":
                     int playerId = int.Parse(parts[1]);
                     if (waitingPlayerId == -1)
@@ -261,6 +266,20 @@ public class Server
         stream.Write(responseData, 0, responseData.Length);
 
     }
+     private void HandleAdminLogin(string username, string password, TcpClient client)
+    {
+
+        NetworkStream stream = client.GetStream();
+
+        int AdminId = playerController.validateAdmin(username, password);
+        if (AdminId != -1)
+        {
+            // clients.Add(playerId, client);
+        }
+        byte[] responseData = Encoding.UTF8.GetBytes(AdminId.ToString());
+        stream.Write(responseData, 0, responseData.Length);
+
+    }
 
     private void EndTurn(Game game, List<PlayedCard> playedCards, TcpClient client)
     {
@@ -300,7 +319,9 @@ public class Server
                 }
                 /********************/
                 /***need completeing***/
-            }else{
+            }
+            else
+            {
                 gameController.startBattle(game);
             }
 

@@ -31,19 +31,19 @@ public class playerDataAccess
         return name;
 
     }
-    public string getPlayerPass(int id)
-    {
-        string query = "SELECT password FROM players where id = " + id + ";";
-        string name = "";
-        SqliteDataReader reader = database.openConnectionAndRunQuery(query);
-        if (reader.Read())
-        {
-            name = reader.GetString(0);
-        }
-        database.closeConnection(reader);
-        return name;
+    // public string getPlayerPass(int id)
+    // {
+    //     string query = "SELECT password FROM players where id = " + id + ";";
+    //     string name = "";
+    //     SqliteDataReader reader = database.openConnectionAndRunQuery(query);
+    //     if (reader.Read())
+    //     {
+    //         name = reader.GetString(0);
+    //     }
+    //     database.closeConnection(reader);
+    //     return name;
 
-    }
+    // }
     public string getPlayerPass(string name)
     {
         string query = $"SELECT password FROM players where name = '{name}';";
@@ -69,6 +69,83 @@ public class playerDataAccess
         return id;
 
     }
+
+
+
+
+
+ public string getAdminName(int id)
+    {
+        string query = "SELECT name FROM admins where id = " + id + ";";
+        string name = "";
+        SqliteDataReader reader = database.openConnectionAndRunQuery(query);
+        if (reader.Read())
+        {
+            name = reader.GetString(0);
+        }
+        database.closeConnection(reader);
+        return name;
+
+    }
+    public string getAdminPass(int id)
+    {
+        string query = "SELECT password FROM admins where id = " + id + ";";
+        string name = "";
+        SqliteDataReader reader = database.openConnectionAndRunQuery(query);
+        if (reader.Read())
+        {
+            name = reader.GetString(0);
+        }
+        database.closeConnection(reader);
+        return name;
+
+    }
+    public string getAdminPass(string name)
+    {
+        string query = $"SELECT pass FROM admins where name = '{name}';";
+        string password = null;
+        IDataReader reader = database.openConnectionAndRunQuery(query);
+        if (reader.Read())
+        {
+            password = reader.GetString(0);
+        }
+        return password;
+
+    }
+    public int getAdminId(string name)
+    {
+        string query =$"SELECT id FROM admins where name = '{name}';";
+        int id = -1;
+        SqliteDataReader reader = database.openConnectionAndRunQuery(query);
+        if (reader.Read())
+        {
+            id = reader.GetInt16(0);
+        }
+        database.closeConnection(reader);
+        return id;
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public bool hasDeck(int id)
     {
         string query = "SELECT hasDeck FROM players where id = " + id + ";";

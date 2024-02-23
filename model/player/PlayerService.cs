@@ -33,6 +33,10 @@ namespace Player_package
         {
             return playerData.getPlayerId(name);
         }
+          private int GetAdminId(string name)
+        {
+            return playerData.getAdminId(name);
+        }
         private ICard[] getPlayerCards(int id)
         {
             ICard[] playerCards = new ICard[3];
@@ -55,6 +59,12 @@ namespace Player_package
         {
             if (password == playerData.getPlayerPass(username))
                 return GetPlayerId(username);
+            return -1;
+        }
+         public int validateAdmin(string username, string password)
+        {
+            if (password == playerData.getAdminPass(username))
+                return GetAdminId(username);
             return -1;
         }
         public ICard[] getPlayerCards(Player player)
