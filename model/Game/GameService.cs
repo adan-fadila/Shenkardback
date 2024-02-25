@@ -32,20 +32,21 @@ namespace Game_package
         {
             locationService.putCardToLocation(player, location, card, game);
             return game;
-           
+
         }
         public bool endTurn(Game game)
-        {
-            return game.endTurn();
-        }
-        public void getTurn(Game game)
         {
             foreach (Player player in game.Players)
             {
                 playerService.drawCard(player, 3);
                 playerService.updatePlayerEnergy(player, 1);
             }
+            return game.endTurn();
         }
+        // public void getTurn(Game game)
+        // {
+
+        // }
         public Game askForGame(int Player1ID, int Player2ID)
         {
 

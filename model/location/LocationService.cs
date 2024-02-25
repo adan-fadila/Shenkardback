@@ -50,10 +50,18 @@ namespace Location_package
 
         }
         /*put card on location and update location points*/
-        public void putCardToLocation(Player player, ILocation location, ICard card, Game game)
+        public Game putCardToLocation(Player player, ILocation location1, ICard card, Game game)
         {
-            location.playCard(player, card);
-            location.applyEffect(game);
+
+            foreach (ILocation location in game.locations)
+            {
+                if (location.id == location1.id)
+                {
+                    location.playCard(player, card);
+                    // location.applyEffect(game);
+                }
+            }
+            return game;
         }
         /*reveal the Location*/
         public void revealLocation(Location location)
