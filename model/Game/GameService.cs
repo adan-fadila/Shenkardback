@@ -38,16 +38,12 @@ namespace Game_package
         {
             foreach (Player player in game.Players)
             {
-                Console.WriteLine("player");
-                playerService.drawCard(player, 1);
+                drawCard(game,1);
                 playerService.updatePlayerEnergy(player, 1);
             }
             return game.endTurn();
         }
-        // public void getTurn(Game game)
-        // {
-
-        // }
+     
         public Game askForGame(int Player1ID, int Player2ID)
         {
 

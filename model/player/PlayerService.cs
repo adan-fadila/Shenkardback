@@ -86,11 +86,13 @@ namespace Player_package
             ICard[] cards1 = generateCards(cards);
             for (int i = 0; i < cards1.Length; i++)
             {
-                Console.WriteLine("card added");
                 player.displayedCards.Add(cards1[i]);
             }
             return cards1;
         }
+
+
+
         private ICard[] generateCards(int[] cardsId)
         {
             ICard[] cards = new ICard[cardsId.Length];
@@ -100,6 +102,8 @@ namespace Player_package
             }
             return cards;
         }
+
+        
         public int getPlayerEnergy(Player player)
         {
             return player.energy;

@@ -22,11 +22,10 @@ namespace Player_package
             this.name = name;
             displayedCards = new List<ICard>();
             this.cards = cards;
-            //if player can choose cards to his deck
-            //not needed now
+           
             if (hasDeck == false)
             {
-                // deck.setDefaultDeck();
+                
             }
             energy = 3;
         }

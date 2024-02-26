@@ -47,7 +47,7 @@ public class Server
         while (isRunning)
         {
             NetworkStream stream = client.GetStream();
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[2024];
             int bytesRead = stream.Read(buffer, 0, buffer.Length);
             if (bytesRead == 0)
             {
@@ -338,10 +338,8 @@ public class Server
             game = gameController.putCardToLocation(player, card.locationData.Id, card.cardData.id, game);
 
         }
-        if (game.numOfPlayersHaveEndedTurn == game.Players.Length)
+        if (game.numOfPlayersHaveEndedTurn % game.Players.Length == 0)
         {
-            Console.WriteLine("2 clicked");
-            game.numOfPlayersHaveEndedTurn = 0;
             /**************************/
             /*check if game ended*/
             /**************************/
