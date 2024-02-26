@@ -44,18 +44,18 @@ class GameController
 
             if (card.id == id)
             {
-                Console.WriteLine("found");
+            
                 return card;
             }
         }
-         Console.WriteLine("notfound");
+        
         return null;
     }
 
     public bool endTurn(Game game)
     {
         
-        return game.endTurn();
+        return gameService.endTurn(game);
     }
     public Game askForGame(int id1, int id2)
     {

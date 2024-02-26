@@ -142,8 +142,7 @@ public class Server
                     break;
                 case "EndTurn":
 
-                    // try
-                    // {
+                   
                     string serializedGameData = parts[1];
                     List<PlayedCard>? playedCards = JsonSerializer.Deserialize<List<PlayedCard>>(serializedGameData);
                     int Id = GetKeyByValue(client);
@@ -151,11 +150,7 @@ public class Server
                     Game game = games[playersIds];
                     EndTurn(game, playedCards, client);
 
-                    // }
-                    // catch (Exception e)
-                    // {
-                    //     Console.WriteLine("HandleClient,EndTurn: " + e.Message);
-                    // }
+                  
 
                     break;
                 default:
@@ -354,7 +349,7 @@ public class Server
             if (gameController.endTurn(game))
             {
                 string gameData = setGameData(game, game.Players[0].id, game.Players[1].id);
-                Console.WriteLine(gameData);
+                
                 List<int>? keyWithplayerId = games.Keys.FirstOrDefault(key => key.Contains(GetKeyByValue(client)));
                 try
                 {
@@ -363,7 +358,7 @@ public class Server
 
                         TcpClient client1 = clients[id];
                         SendMessageToClient(client1, gameData);
-
+                        Console.WriteLine(gameData);
                     }
                 }
                 catch (Exception e)
@@ -447,9 +442,9 @@ public class ServerMain
         //    game = gameController.putCardToLocation(game.Players[1],game.locations[1].id,game.Players[1].displayedCards[0].id,game);
 
         //     Console.WriteLine("---------------------------------------------");
+            
+        //     gameController.endTurn(game);
         //     Console.WriteLine(game);
-        //     int i =gameController.startBattle(game)[0];
-        //     Console.WriteLine(i);
     }
 }
 

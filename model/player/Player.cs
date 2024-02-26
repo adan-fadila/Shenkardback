@@ -59,7 +59,7 @@ namespace Player_package
         }
         public override string ToString()
         {
-            return $"name: {this.name} HandCards: {this.HandPrint()} energy:{this.energy}";
+            return $"name: {this.name} HandCards: {this.HandPrint()}\n";
         }
 
 

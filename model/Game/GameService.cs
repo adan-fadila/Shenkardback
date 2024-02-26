@@ -38,7 +38,8 @@ namespace Game_package
         {
             foreach (Player player in game.Players)
             {
-                playerService.drawCard(player, 3);
+                Console.WriteLine("player");
+                playerService.drawCard(player, 1);
                 playerService.updatePlayerEnergy(player, 1);
             }
             return game.endTurn();

@@ -86,6 +86,7 @@ namespace Player_package
             ICard[] cards1 = generateCards(cards);
             for (int i = 0; i < cards1.Length; i++)
             {
+                Console.WriteLine("card added");
                 player.displayedCards.Add(cards1[i]);
             }
             return cards1;

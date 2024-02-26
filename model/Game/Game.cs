@@ -49,7 +49,7 @@ namespace Game_package
     }
         public override string ToString()
         {
-            return $"Game - Player1: {this.Players[0]} , - Player2: {this.Players[1]} \n- Locations: {this.locations[0]},{this.locations[1]},{this.locations[2]}";
+            return $"Game - Player1: {this.Players[0]} , - Player2: {this.Players[1]} \n- Locations: {this.locations[0]}\n,{this.locations[1]}\n,{this.locations[2]}";
         }
 
 
