@@ -33,7 +33,7 @@ namespace Game_package
       {
         foreach (Player item in Players)
         {
-          item.energy++;
+          item.energy +=6;
         }
         
         this.turn++;

@@ -15,15 +15,16 @@ namespace Location_package
         public Zone zone1 { get; private set; }
         public Zone zone2 { get; private set; }
         public bool revealed { get; set; }
-
+        public string Image {get;set;}
         public ILocationBattleStrategy battleStrategy { get; }
 
-        public Location(int id, string name, string desc, ILocationBattleStrategy locationBattleStrategy)
+        public Location(int id, string name, string desc,string Image ,ILocationBattleStrategy locationBattleStrategy)
         {
             this.id = id;
             this.Name = name;
             this.Desc = desc;
             this.battleStrategy = locationBattleStrategy;
+            this.Image = Image; 
             this.revealed = false;
 
         }

@@ -61,6 +61,18 @@ public class locationDataAccess
         database.closeConnection(reader);
         return ability;
     }
+     public string getLocationImage(int id)
+    {
+        string query = "select image from location where id = " + id + ";";
+        string image = "";
+        SqliteDataReader reader = database.openConnectionAndRunQuery(query);
+        if (reader.Read())
+        {
+            image = reader.GetString(0);
+        }
+        database.closeConnection(reader);
+        return image;
+    }
     public int numOfLocations()
     {
         string query = $"SELECT COUNT(id) FROM location; ";

@@ -227,6 +227,7 @@ public class Server
             Id = location.id,
             Name = location.Name,
             Desc = location.Desc,
+            Image = location.Image
         };
         if (location.zone1.Player == player1)
         {

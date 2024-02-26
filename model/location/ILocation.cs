@@ -12,6 +12,7 @@ namespace Location_package
         string Desc { get; }
         Zone zone1 { get; }
         Zone zone2 { get; }
+        string Image {get;set;}
         ILocationBattleStrategy battleStrategy { get; }
         public void setPlayer(int id1,int id2);
         void applyEffect(Game game);
