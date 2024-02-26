@@ -11,6 +11,10 @@ namespace Game_package
         public List<int> battle(Game game)
         {
             IDictionary<int, int> playersNumOfwinning = new Dictionary<int, int>();
+            foreach (Player p in game.Players)
+            {
+                playersNumOfwinning.Add(p.id,0);
+            }
             foreach (Location l in game.locations)
             {
                 int p = getWinningPlayer(l);

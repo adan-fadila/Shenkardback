@@ -107,6 +107,9 @@ namespace Player_package
         {
             player.energy += en;
         }
+        public void AddPlayer(string name, string pass){
+            playerData.AddPlayer(name,pass);
+        }
 
     }
 }

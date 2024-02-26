@@ -31,19 +31,7 @@ public class playerDataAccess
         return name;
 
     }
-    // public string getPlayerPass(int id)
-    // {
-    //     string query = "SELECT password FROM players where id = " + id + ";";
-    //     string name = "";
-    //     SqliteDataReader reader = database.openConnectionAndRunQuery(query);
-    //     if (reader.Read())
-    //     {
-    //         name = reader.GetString(0);
-    //     }
-    //     database.closeConnection(reader);
-    //     return name;
 
-    // }
     public string getPlayerPass(string name)
     {
         string query = $"SELECT password FROM players where name = '{name}';";
@@ -127,24 +115,11 @@ public class playerDataAccess
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public void AddPlayer(string name, string pass){
+        string query = $"INSERT INTO table_name (name, password)VALUES ({name},{pass});";
+        database.openConnectionAndRunQueryWithoutRead(query);
+        
+    }
 
     public bool hasDeck(int id)
     {

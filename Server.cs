@@ -105,6 +105,11 @@ public class Server
                     string password = parts[2];
                     HandleLogin(username, password, client);
                     break;
+                case "SignIn":
+                    string newUsername = parts[1];
+                    string newPassword = parts[2];
+                    HandleSignIn(newUsername,newPassword);
+                    break;
                 case "AdminLOGIN":
                     username = parts[1];
                     password = parts[2];
@@ -139,12 +144,12 @@ public class Server
 
                     // try
                     // {
-                        string serializedGameData = parts[1];
-                        List<PlayedCard>? playedCards = JsonSerializer.Deserialize<List<PlayedCard>>(serializedGameData);
-                        int Id = GetKeyByValue(client);
-                        List<int>? playersIds = games.Keys.FirstOrDefault(key => key.Contains(Id));
-                        Game game = games[playersIds];
-                        EndTurn(game, playedCards, client);
+                    string serializedGameData = parts[1];
+                    List<PlayedCard>? playedCards = JsonSerializer.Deserialize<List<PlayedCard>>(serializedGameData);
+                    int Id = GetKeyByValue(client);
+                    List<int>? playersIds = games.Keys.FirstOrDefault(key => key.Contains(Id));
+                    Game game = games[playersIds];
+                    EndTurn(game, playedCards, client);
 
                     // }
                     // catch (Exception e)
@@ -251,7 +256,7 @@ public class Server
         byte[] buffer = Encoding.ASCII.GetBytes(message);
         stream.Write(buffer, 0, buffer.Length);
     }
-    
+
     private void HandleLogin(string username, string password, TcpClient client)
     {
 
@@ -264,6 +269,13 @@ public class Server
         }
         byte[] responseData = Encoding.UTF8.GetBytes(playerId.ToString());
         stream.Write(responseData, 0, responseData.Length);
+
+    }
+
+    private void HandleSignIn(string username, string password)
+    {
+
+        playerController.AddPlayer(username, password);
 
     }
 
@@ -306,13 +318,16 @@ public class Server
 
     private void EndTurn(Game game, List<PlayedCard> playedCards, TcpClient client)
     {
-        if(game == null){
+        if (game == null)
+        {
             Console.WriteLine("game is null");
         }
-        if(playedCards == null){
+        if (playedCards == null)
+        {
             Console.WriteLine("playedcards is null");
         }
-        if(client == null){
+        if (client == null)
+        {
             Console.WriteLine("client is null");
         }
         game.numOfPlayersHaveEndedTurn++;
@@ -324,16 +339,18 @@ public class Server
         Player player = getPlayerbyId(game, playerId);
         foreach (PlayedCard card in playedCards)
         {
-            Console.WriteLine(card.cardData.Name +" to  "+ card.locationData.Name);
+            Console.WriteLine(card.cardData.Name + " to  " + card.locationData.Name);
             game = gameController.putCardToLocation(player, card.locationData.Id, card.cardData.id, game);
 
         }
         if (game.numOfPlayersHaveEndedTurn == game.Players.Length)
         {
             Console.WriteLine("2 clicked");
+            game.numOfPlayersHaveEndedTurn = 0;
             /**************************/
             /*check if game ended*/
             /**************************/
+
             if (gameController.endTurn(game))
             {
                 string gameData = setGameData(game, game.Players[0].id, game.Players[1].id);
@@ -424,13 +441,15 @@ public class ServerMain
 
         Server server = new Server(8888);
         server.Start();
-    //     GameController gameController = new GameController();
-    //     Game game = gameController.askForGame(1,2);
-    //     Console.WriteLine(game);
-    //    game = gameController.putCardToLocation(game.Players[1],game.locations[1].id,game.Players[1].displayedCards[0].id,game);
-     
-    //     Console.WriteLine("---------------------------------------------");
-    //     Console.WriteLine(game);
+        //     GameController gameController = new GameController();
+        //     Game game = gameController.askForGame(1,2);
+        //     Console.WriteLine(game);
+        //    game = gameController.putCardToLocation(game.Players[1],game.locations[1].id,game.Players[1].displayedCards[0].id,game);
+
+        //     Console.WriteLine("---------------------------------------------");
+        //     Console.WriteLine(game);
+        //     int i =gameController.startBattle(game)[0];
+        //     Console.WriteLine(i);
     }
 }
 

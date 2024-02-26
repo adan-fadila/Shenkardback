@@ -47,6 +47,27 @@ public class Database
             return null; // Or throw the exception if appropriate for your application flow
         }
     }
+    public void openConnectionAndRunQueryWithoutRead(string query)
+    {
+        try
+        {
+            // Create a new SQLite connection using the connection string
+            dbconn = new SqliteConnection(connString);
+            dbconn.Open();
+
+            // Create a command object and set its command text to the query
+            dbcmd = dbconn.CreateCommand();
+            dbcmd.CommandText = query;
+
+            // Execute the query and return the data reader
+            dbcmd.ExecuteNonQuery();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error executing query: " + ex.Message);
+
+        }
+    }
 
     public void closeConnection(SqliteDataReader reader)
     {
