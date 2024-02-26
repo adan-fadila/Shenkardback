@@ -40,8 +40,7 @@ class GameController
     {
         foreach (ICard card in player.displayedCards)
         {
-                     Console.WriteLine("cardId: "+card.id +" id: "+id);
-
+               
             if (card.id == id)
             {
             

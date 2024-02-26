@@ -31,10 +31,6 @@ namespace Game_package
     {
       if (this.turn < numOfTurns)
       {
-        foreach (Player item in Players)
-        {
-          item.energy +=6;
-        }
         
         this.turn++;
         return true;

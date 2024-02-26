@@ -42,13 +42,24 @@ namespace Player_package
             ICard[] playerCards = new ICard[3];
             if (!playerData.hasDeck(id))
             {
-                return cardService.getRandomCards(1, 1, 1);
+                return cardService.getRandomCards(4, 1, 1);
             }
 
             /*****/
             /*write code --to return player deck*/
             return playerCards;
         }
+
+
+
+
+
+
+
+
+
+
+
         /// <summary>
         /// check player login info
         /// </summary>

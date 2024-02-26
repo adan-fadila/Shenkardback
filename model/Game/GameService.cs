@@ -36,12 +36,16 @@ namespace Game_package
         }
         public bool endTurn(Game game)
         {
+             drawCard(game,1);
+            updatePlayerEnergy(game,1);
+            return game.endTurn();
+        }
+        private void updatePlayerEnergy(Game game,int num){
             foreach (Player player in game.Players)
             {
-                drawCard(game,1);
-                playerService.updatePlayerEnergy(player, 1);
+               
+                playerService.updatePlayerEnergy(player, num);
             }
-            return game.endTurn();
         }
      
         public Game askForGame(int Player1ID, int Player2ID)
