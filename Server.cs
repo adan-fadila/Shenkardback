@@ -64,16 +64,16 @@ public class Server
                         var keyWithplayerId = games.Keys.FirstOrDefault(key => key.Contains(disconnectedPlayerId));
                         if (keyWithplayerId != null)
                         {
-                          
+
                             Game gameToRemove = games[keyWithplayerId];
                             if (gameToRemove.Players[0].id == disconnectedPlayerId)
                             {
-                               
-                                SendMessageToClient(clients[gameToRemove.Players[1].id],"PlayerExit");
+
+                                SendMessageToClient(clients[gameToRemove.Players[1].id], "PlayerExit");
                             }
                             else
                             {
-                                SendMessageToClient(clients[gameToRemove.Players[0].id],"PlayerExit");
+                                SendMessageToClient(clients[gameToRemove.Players[0].id], "PlayerExit");
                             }
 
 
@@ -151,7 +151,32 @@ public class Server
 
 
 
+
+
                     break;
+                case "ExitGame":
+                    int disconnectedPlayerId = clients.FirstOrDefault(x => x.Value == client).Key;
+
+                    var keyWithplayerId = games.Keys.FirstOrDefault(key => key.Contains(disconnectedPlayerId));
+                    if (keyWithplayerId != null)
+                    {
+
+                        Game gameToRemove = games[keyWithplayerId];
+                        if (gameToRemove.Players[0].id == disconnectedPlayerId)
+                        {
+
+                            SendMessageToClient(clients[gameToRemove.Players[1].id], "PlayerExit");
+                        }
+                        else
+                        {
+                            SendMessageToClient(clients[gameToRemove.Players[0].id], "PlayerExit");
+                        }
+
+
+                        games.Remove(keyWithplayerId);
+                    }
+                    break;
+
                 default:
                     break;
             }
