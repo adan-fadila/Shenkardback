@@ -64,19 +64,18 @@ public class Server
                         var keyWithplayerId = games.Keys.FirstOrDefault(key => key.Contains(disconnectedPlayerId));
                         if (keyWithplayerId != null)
                         {
-                            // Get the corresponding Game object
-                            //end the game to the other Player !!!!!!!!!!!!!!!!!!!!!! not fineshed
+                          
                             Game gameToRemove = games[keyWithplayerId];
                             if (gameToRemove.Players[0].id == disconnectedPlayerId)
                             {
-                                NetworkStream otherPlayStream = clients[gameToRemove.Players[1].id].GetStream();
+                               
+                                SendMessageToClient(clients[gameToRemove.Players[1].id],"PlayerExit");
                             }
                             else
                             {
-                                NetworkStream otherPlayStream = clients[gameToRemove.Players[0].id].GetStream();
+                                SendMessageToClient(clients[gameToRemove.Players[0].id],"PlayerExit");
                             }
 
-                            // Now you can use the 'game' object as needed 
 
                             games.Remove(keyWithplayerId);
                         }
@@ -108,7 +107,7 @@ public class Server
                 case "SignIn":
                     string newUsername = parts[1];
                     string newPassword = parts[2];
-                    HandleSignIn(newUsername,newPassword);
+                    HandleSignIn(newUsername, newPassword);
                     break;
                 case "AdminLOGIN":
                     username = parts[1];
@@ -142,7 +141,7 @@ public class Server
                     break;
                 case "EndTurn":
 
-                   
+
                     string serializedGameData = parts[1];
                     List<PlayedCard>? playedCards = JsonSerializer.Deserialize<List<PlayedCard>>(serializedGameData);
                     int Id = GetKeyByValue(client);
@@ -150,7 +149,7 @@ public class Server
                     Game game = games[playersIds];
                     EndTurn(game, playedCards, client);
 
-                  
+
 
                     break;
                 default:
@@ -334,7 +333,6 @@ public class Server
         Player player = getPlayerbyId(game, playerId);
         foreach (PlayedCard card in playedCards)
         {
-            Console.WriteLine(card.cardData.Name + " to  " + card.locationData.Name);
             game = gameController.putCardToLocation(player, card.locationData.Id, card.cardData.id, game);
 
         }
@@ -343,12 +341,12 @@ public class Server
             /**************************/
             /*check if game ended*/
             /**************************/
-
+            List<int>? keyWithplayerId = games.Keys.FirstOrDefault(key => key.Contains(GetKeyByValue(client)));
             if (gameController.endTurn(game))
             {
                 string gameData = setGameData(game, game.Players[0].id, game.Players[1].id);
-                
-                List<int>? keyWithplayerId = games.Keys.FirstOrDefault(key => key.Contains(GetKeyByValue(client)));
+
+
                 try
                 {
                     foreach (int id in keyWithplayerId)
@@ -356,7 +354,6 @@ public class Server
 
                         TcpClient client1 = clients[id];
                         SendMessageToClient(client1, gameData);
-                        Console.WriteLine(gameData);
                     }
                 }
                 catch (Exception e)
@@ -368,7 +365,19 @@ public class Server
             }
             else
             {
-                gameController.startBattle(game);
+                List<int> winners = gameController.startBattle(game);
+                string serializedWinners = JsonSerializer.Serialize(winners);
+                string msg = $"gameEnd|{serializedWinners}";
+                foreach (int id in keyWithplayerId)
+                {
+
+                    TcpClient client1 = clients[id];
+                    SendMessageToClient(client1, msg);
+                    Console.WriteLine(serializedWinners);
+
+                }
+                games.Remove(keyWithplayerId);
+
             }
 
 
@@ -440,7 +449,7 @@ public class ServerMain
         //    game = gameController.putCardToLocation(game.Players[1],game.locations[1].id,game.Players[1].displayedCards[0].id,game);
 
         //     Console.WriteLine("---------------------------------------------");
-            
+
         //     gameController.endTurn(game);
         //     Console.WriteLine(game);
     }
