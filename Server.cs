@@ -182,7 +182,7 @@ public class Server
                 case "GetCards":
                     SendCards(client);
                     break;
-                case "UpdateCards":
+                case "UpdateCard":
                     try
                     {
                         int id = int.Parse(parts[1]);
