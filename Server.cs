@@ -1,4 +1,5 @@
 ﻿
+using System.Data;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -22,6 +23,7 @@ public class Server
 
     private PlayerController playerController = new PlayerController();
     private GameController gameController = new GameController();
+    private CardController cardController = new CardController();
     public Server(int port)
     {
         listener = new TcpListener(IPAddress.Any, port);
@@ -177,11 +179,44 @@ public class Server
                     }
                     break;
 
+                case "GetCards":
+                    SendCards(client);
+                    break;
+                case "UpdateCards":
+                    try
+                    {
+                        int id = int.Parse(parts[1]);
+                        int cost = int.Parse(parts[2]);
+                        int power = int.Parse(parts[3]);
+                        UpdateCards(client, id, cost, power);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("UpdateCards faild Wrong Parametes, " + e);
+                    }
+
+                    break;
+
                 default:
                     break;
             }
         }
     }
+
+
+    private void SendCards(TcpClient client)
+    {
+        List<ICard> cards = cardController.getCards();
+        string serializedGameData = JsonSerializer.Serialize(cards);
+        string msg = $"Cards|{serializedGameData}";
+        SendMessageToClient(client, msg);
+    }
+
+    private void UpdateCards(TcpClient client, int id, int cost, int power)
+    {
+        cardController.updateCard(id, cost, power);
+    }
+
 
     private void StartGame(int player1, int player2, TcpClient client1, TcpClient client2)
     {

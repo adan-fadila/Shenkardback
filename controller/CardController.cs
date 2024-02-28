@@ -2,7 +2,7 @@ using Card_package;
 class CardController
 {
     private CardService cardService = CardService.getInstance();
-    public ICard getCard(int id){
+    private ICard getCard(int id){
         return cardService.getCard(id);
     }
     public void updateCard(int id, int cost,int power){
@@ -14,7 +14,7 @@ class CardController
     public void createCard(string name, string desc, int cost, int power){
         cardService.createCard(name,desc,cost,power);
     }
-    public void getCards(){
-        cardService.getCards();
+    public List<ICard> getCards(){
+       return cardService.getCards();
     }
 }

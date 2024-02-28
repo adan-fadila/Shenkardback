@@ -31,6 +31,7 @@ namespace Game_package
                 if (playersNumOfwinning[p] == maxWins)
                 {
                     winner.Add(p);
+                    Console.WriteLine(p);
                 }
             }
             return winner;
