@@ -216,6 +216,7 @@ public class Server
     private void UpdateCards(TcpClient client, int id, int cost, int power)
     {
         cardController.updateCard(id, cost, power);
+        
     }
 
 

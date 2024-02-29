@@ -13,12 +13,14 @@ namespace Location_package
                 Console.WriteLine("zone1 have cards");
                 ICard card1 = location.zone1.GetLastCard();
                 location.zone2.setCard(card1);
+                return ;
             }
             if (location.zone2.GetCards().Count != 0)
             {
                 Console.WriteLine("zone2 have cards");
                 ICard card2 = location.zone2.GetLastCard();
                 location.zone1.setCard(card2);
+                return;
             }
 
 
