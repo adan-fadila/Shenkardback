@@ -176,6 +176,7 @@ public class Server
 
 
                         games.Remove(keyWithplayerId);
+                        Console.WriteLine(games.Count);
                     }
                     break;
 
@@ -503,15 +504,7 @@ public class ServerMain
 
         Server server = new Server(8888);
         server.Start();
-        //     GameController gameController = new GameController();
-        //     Game game = gameController.askForGame(1,2);
-        //     Console.WriteLine(game);
-        //    game = gameController.putCardToLocation(game.Players[1],game.locations[1].id,game.Players[1].displayedCards[0].id,game);
-
-        //     Console.WriteLine("---------------------------------------------");
-
-        //     gameController.endTurn(game);
-        //     Console.WriteLine(game);
+  
     }
 }
 

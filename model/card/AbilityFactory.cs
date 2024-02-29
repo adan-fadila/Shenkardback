@@ -10,7 +10,7 @@ namespace Card_package
             if(name.Equals("simple")){
                 return new SimpleAbilityStrategy();
             }
-            return new SimpleAbilityStrategy();
+            return new AnotherAbilityStrategy();
         }
     }
 }

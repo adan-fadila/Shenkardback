@@ -1,3 +1,6 @@
+using Location_package;
+using Player_package;
+
 namespace Card_package
 {
     public class AbilityCard : ICard
@@ -27,10 +30,10 @@ namespace Card_package
         }
 
 
-        public void ActivateAbility()
+        public void ActivateAbility(Zone playerZone, Player player)
         {
             // Call the ability strategy to activate the ability
-            this.Ability.ActivateAbility();
+            this.Ability.ActivateAbility(playerZone,player);
         }
        public override string ToString()
         {

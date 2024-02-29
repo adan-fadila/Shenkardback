@@ -2,6 +2,9 @@
 /*************************************/
 /*JUST FOR TESTING*/
 
+using Location_package;
+using Player_package;
+
 namespace Card_package
 {
     public class AnotherAbilityStrategy : IAbilityStrategy
@@ -9,9 +12,10 @@ namespace Card_package
         public AnotherAbilityStrategy()
         {
         }
-        public void ActivateAbility()
+        public void ActivateAbility(Zone playerZone, Player player)
         {
-            Console.WriteLine("another ability");
+            Console.WriteLine("AnotherAbilityStrategy");
+            player.energy *= 2;
         }
 
 

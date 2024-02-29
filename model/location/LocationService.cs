@@ -58,7 +58,7 @@ namespace Location_package
                 if (location.id == location1.id)
                 {
                     location.playCard(player, card);
-                    // location.applyEffect(game);
+                    location.applyEffect(game);
                 }
             }
             return game;

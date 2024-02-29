@@ -30,24 +30,26 @@ namespace Game_package
         }
         public Game putCardToLocation(Player player, ILocation location, ICard card, Game game)
         {
+            updatePlayerEnergy(game, 1);
             locationService.putCardToLocation(player, location, card, game);
             return game;
 
         }
         public bool endTurn(Game game)
         {
-             drawCard(game,1);
-            updatePlayerEnergy(game,1);
+            drawCard(game, 1);
+            
             return game.endTurn();
         }
-        private void updatePlayerEnergy(Game game,int num){
+        private void updatePlayerEnergy(Game game, int num)
+        {
             foreach (Player player in game.Players)
             {
-               
+
                 playerService.updatePlayerEnergy(player, num);
             }
         }
-     
+
         public Game askForGame(int Player1ID, int Player2ID)
         {
 

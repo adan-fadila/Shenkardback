@@ -12,11 +12,14 @@ namespace Location_package
             string locationBattleStrategyName = locationData.getLocationAbility(id);
             string Image = locationData.getLocationImage(id);
             ILocationBattleStrategy locationBattleStrategy = null;
-            if(locationBattleStrategyName == "NegativeZoneStrategy"){
-               locationBattleStrategy= new LocationNegativeZoneStrategy() ;
+            if(locationBattleStrategyName == "NegativeTotalStrategy"){
+               locationBattleStrategy= new NegativeTotalStrategy() ;
             }
-            if(locationBattleStrategyName == "ReplaceCardsStrategy"){
-               locationBattleStrategy= new LocationReplaceCardsStrategy() ;
+            if(locationBattleStrategyName == "ReplaceTotalStrategy"){
+                locationBattleStrategy= new ReplaceTotalStrategy() ;
+            }
+            if(locationBattleStrategyName == "ReplaceCardStrategy"){
+                locationBattleStrategy = new ReplaceCardStrategy();
             }
             return new Location(id,name,desc,Image,locationBattleStrategy);
         }

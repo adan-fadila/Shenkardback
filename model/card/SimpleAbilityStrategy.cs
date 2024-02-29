@@ -2,6 +2,9 @@
 /*************************************/
 /*JUST FOR TESTING*/
 
+using Location_package;
+using Player_package;
+
 namespace Card_package
 {
     public class SimpleAbilityStrategy : IAbilityStrategy
@@ -9,9 +12,10 @@ namespace Card_package
         public SimpleAbilityStrategy()
         {
         }
-        public void ActivateAbility()
+        public void ActivateAbility(Zone playerZone, Player player)
         {
-           Console.WriteLine("simple ability");
+            Console.WriteLine("SimpleAbilityStrategy");
+            playerZone.total *= 2;
         }
 
 

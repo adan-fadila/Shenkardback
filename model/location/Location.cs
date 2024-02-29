@@ -38,20 +38,29 @@ namespace Location_package
         {
             this.revealed = true;
         }
+
+
         public void applyEffect(Game game)
         {
-            if (this.revealed)
+            // if (this.revealed)
             {
                 this.battleStrategy.activate(game, this);
             }
         }
+
+
+
         public void playCard(Player player, ICard card)
         {
             Zone playerZone = getPlayerZone(player.id);
             playerZone.setCard(card);
             player.displayedCards.Remove(card);
+            if(card is AbilityCard abilityCard){
+                Console.WriteLine("ability");
+                abilityCard.ActivateAbility(playerZone,player);
+            }
             player.energy -= card.Cost;
-
+          
 
         }
         private Zone getPlayerZone(int player)
@@ -84,6 +93,18 @@ namespace Location_package
         }
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
     public class Zone
     {
         private const int cards_capacity = 4;
@@ -126,9 +147,8 @@ namespace Location_package
         }
         public ICard GetLastCard()
         {
-            cards_count--;
 
-            return this.cards[cards_count];
+            return this.cards.Last();
         }
 
     }
