@@ -208,15 +208,25 @@ public class Server
     private void SendCards(TcpClient client)
     {
         List<ICard> cards = cardController.getCards();
-        string serializedGameData = JsonSerializer.Serialize(cards);
-        string msg = $"Cards|{serializedGameData}";
-        SendMessageToClient(client, msg);
+        List<CardData> cardDatas = new List<CardData>();
+        foreach (ICard card in cards)
+        {
+            cardDatas.Add(GetCardData(card));
+        }
+        string serializedGameData = JsonSerializer.Serialize(cardDatas);
+
+        SendMessageToClient(client, serializedGameData);
     }
 
     private void UpdateCards(TcpClient client, int id, int cost, int power)
     {
-        cardController.updateCard(id, cost, power);
-        
+        cardController.updateCardCost(id, cost);
+        cardController.updateCardPower(id, power);
+        ICard card = cardController.getCard(id);
+        CardData cardData = GetCardData(card);
+        string msg = JsonSerializer.Serialize(cardData);
+        SendMessageToClient(client, msg);
+
     }
 
 
@@ -267,19 +277,24 @@ public class Server
         }
         foreach (ICard card in cards)
         {
-            CardData cardData = new CardData
-            {
-                id = card.id,
-                Name = card.Name,
-                Desc = card.Desc,
-                Cost = card.Cost,
-                Power = card.Power,
-                Image = card.Image
-
-            };
+            CardData cardData = GetCardData(card);
             HandCards.Add(cardData);
         }
         return HandCards;
+    }
+    private CardData GetCardData(ICard card)
+    {
+        CardData cardData = new CardData
+        {
+            id = card.id,
+            Name = card.Name,
+            Desc = card.Desc,
+            Cost = card.Cost,
+            Power = card.Power,
+            Image = card.Image
+
+        };
+        return cardData;
     }
     private LocationData GetLocationData(ILocation location, int player1, int player2)
     {
@@ -505,7 +520,7 @@ public class ServerMain
 
         Server server = new Server(8888);
         server.Start();
-  
+
     }
 }
 

@@ -208,10 +208,16 @@ public class cardDataAccess
         return defaultDeck;
 
     }
-    public void updateCard(int id, int cost, int power)
+    public void updateCardCost(int id, int cost)
     {
-        string query = $"UPDATE cards SET cost = {cost}, power = {power} WHERE id = {id};";
-        /****************************************/
-        /*TODO add code*/
+        string query = $"UPDATE cards SET cost = {cost} WHERE id = {id};";
+        database.openConnectionAndRunQueryWithoutRead(query);
+        
+    }
+     public void updateCardPower(int id,int power)
+    {
+        string query = $"UPDATE cards SET power = {power} WHERE id = {id};";
+        database.openConnectionAndRunQueryWithoutRead(query);
+        
     }
 }

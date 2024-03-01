@@ -2,11 +2,14 @@ using Card_package;
 class CardController
 {
     private CardService cardService = CardService.getInstance();
-    private ICard getCard(int id){
+    public ICard getCard(int id){
         return cardService.getCard(id);
     }
-    public void updateCard(int id, int cost,int power){
-        cardService.updateCard(id,cost,power);
+    public void updateCardCost(int id, int cost){
+        cardService.updateCardCost(id,cost);
+    }
+    public void updateCardPower(int id, int power){
+        cardService.updateCardPower(id,power);
     }
     public void deleteCard(int id){
         cardService.deleteCard(id);

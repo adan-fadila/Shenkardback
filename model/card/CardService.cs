@@ -58,10 +58,15 @@ namespace Card_package
             return defaultDeck;
         }
 
-        public void updateCard(int id, int cost, int power)
+        public void updateCardCost(int id, int cost)
         {
-            cardData.updateCard(id, cost, power);
+            cardData.updateCardCost(id, cost);
         }
+         public void updateCardPower(int id, int power)
+        {
+            cardData.updateCardPower(id, power);
+        }
+
         public string getCardType(int id)
         {
             return cardData.getCardType(id);
