@@ -116,7 +116,7 @@ public class playerDataAccess
 
 
     public void AddPlayer(string name, string pass){
-        string query = $"INSERT INTO table_name (name, password)VALUES ({name},{pass});";
+        string query = $"INSERT INTO players (name, password) VALUES ('{name}','{pass}');";
         database.openConnectionAndRunQueryWithoutRead(query);
         
     }
