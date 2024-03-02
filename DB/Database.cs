@@ -86,4 +86,17 @@ public class Database
             dbconn.Dispose();
         }
     }
+     public void closeConnection()
+    {
+       
+        if (dbcmd != null)
+        {
+            dbcmd.Dispose();
+        }
+        if (dbconn != null && dbconn.State != ConnectionState.Closed)
+        {
+            dbconn.Close();
+            dbconn.Dispose();
+        }
+    }
 }

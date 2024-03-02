@@ -212,12 +212,15 @@ public class cardDataAccess
     {
         string query = $"UPDATE cards SET cost = {cost} WHERE id = {id};";
         database.openConnectionAndRunQueryWithoutRead(query);
+        database.closeConnection();
+
         
     }
      public void updateCardPower(int id,int power)
     {
         string query = $"UPDATE cards SET power = {power} WHERE id = {id};";
         database.openConnectionAndRunQueryWithoutRead(query);
+        database.closeConnection();
         
     }
 }

@@ -218,7 +218,7 @@ public class Server
         SendMessageToClient(client, serializedGameData);
     }
 
-    private void UpdateCards(TcpClient client, int id, int cost, int power)
+    public void UpdateCards(TcpClient client, int id, int cost, int power)
     {
         cardController.updateCardCost(id, cost);
         cardController.updateCardPower(id, power);
@@ -437,8 +437,7 @@ public class Server
                 {
                     Console.WriteLine("End Turn Exception" + e);
                 }
-                /********************/
-                /***need completeing***/
+               
             }
             else
             {
@@ -519,6 +518,7 @@ public class ServerMain
     {
 
         Server server = new Server(8888);
+      
         server.Start();
 
     }
