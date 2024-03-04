@@ -58,11 +58,23 @@ namespace Location_package
                 if (location.id == location1.id)
                 {
                     location.playCard(player, card);
-                    location.applyEffect(game);
+
                 }
             }
             return game;
         }
+        public Game applayEffect(ILocation location1, Game game){
+              foreach (ILocation location in game.locations)
+            {
+                if (location.id == location1.id)
+                {
+                    location.applyEffect(game);
+
+                }
+            }
+            return game;
+        }
+
         /*reveal the Location*/
         public void revealLocation(Location location)
         {

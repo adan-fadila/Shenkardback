@@ -186,6 +186,7 @@ public class Server
                 case "UpdateCard":
                     try
                     {
+                        Console.WriteLine("update Card");
                         int id = int.Parse(parts[1]);
                         int cost = int.Parse(parts[2]);
                         int power = int.Parse(parts[3]);
@@ -220,11 +221,15 @@ public class Server
 
     public void UpdateCards(TcpClient client, int id, int cost, int power)
     {
+
         cardController.updateCardCost(id, cost);
+
         cardController.updateCardPower(id, power);
+
         ICard card = cardController.getCard(id);
         CardData cardData = GetCardData(card);
         string msg = JsonSerializer.Serialize(cardData);
+        Console.WriteLine(msg);
         SendMessageToClient(client, msg);
 
     }
@@ -415,6 +420,11 @@ public class Server
         }
         if (game.numOfPlayersHaveEndedTurn % game.Players.Length == 0)
         {
+
+            foreach (PlayedCard card in playedCards)
+            {
+                game = gameController.ApplyLocationEffect(game, card.locationData.Id);
+            }
             /**************************/
             /*check if game ended*/
             /**************************/
@@ -437,7 +447,7 @@ public class Server
                 {
                     Console.WriteLine("End Turn Exception" + e);
                 }
-               
+
             }
             else
             {
@@ -518,7 +528,7 @@ public class ServerMain
     {
 
         Server server = new Server(8888);
-      
+
         server.Start();
 
     }

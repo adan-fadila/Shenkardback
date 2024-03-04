@@ -22,6 +22,16 @@ class GameController
         return gameService.putCardToLocation(player, location, card, game);
 
     }
+    public Game ApplyLocationEffect(Game game, int locationId){
+         ILocation? location = getLocationById(game, locationId);
+        
+        if ( location == null)
+        {
+            return null;
+        }
+
+        return gameService.ApplyLocationEffect(game,location);
+    }
 
     private ILocation getLocationById(Game game, int id)
     {

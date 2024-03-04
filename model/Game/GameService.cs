@@ -35,6 +35,10 @@ namespace Game_package
             return game;
 
         }
+        public Game ApplyLocationEffect(Game game, ILocation location){
+            locationService.applayEffect(location,game);
+            return game;
+        }
         public bool endTurn(Game game)
         {
             drawCard(game, 1);
