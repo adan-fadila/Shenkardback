@@ -57,6 +57,7 @@ public class Server
                 Console.WriteLine("Client disconnected.");
                 // Remove the disconnected client from the dictionary
                 int disconnectedPlayerId = clients.FirstOrDefault(x => x.Value == client).Key;
+                Console.WriteLine($"logout: {disconnectedPlayerId}");
                 if (disconnectedPlayerId != 0)
                 {
                     clients.Remove(disconnectedPlayerId);
@@ -109,7 +110,7 @@ public class Server
                 case "SignUp":
                     string newUsername = parts[1];
                     string newPassword = parts[2];
-                    HandleSignIn(client,newUsername, newPassword);
+                    HandleSignIn(client, newUsername, newPassword);
                     break;
                 case "AdminLOGIN":
                     username = parts[1];
@@ -183,6 +184,7 @@ public class Server
                 case "GetCards":
                     SendCards(client);
                     break;
+              
                 case "UpdateCard":
                     try
                     {
@@ -348,14 +350,15 @@ public class Server
 
     }
 
-    private void HandleSignIn(TcpClient client,string username, string password)
+    private void HandleSignIn(TcpClient client, string username, string password)
     {
 
-        if(playerController.AddPlayer(username, password)){
-            SendMessageToClient(client,"success");
+        if (playerController.AddPlayer(username, password))
+        {
+            SendMessageToClient(client, "success");
             return;
         }
-        SendMessageToClient(client,"failed");
+        SendMessageToClient(client, "failed");
 
     }
 
