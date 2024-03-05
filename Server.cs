@@ -106,10 +106,10 @@ public class Server
                     string password = parts[2];
                     HandleLogin(username, password, client);
                     break;
-                case "SignIn":
+                case "SignUp":
                     string newUsername = parts[1];
                     string newPassword = parts[2];
-                    HandleSignIn(newUsername, newPassword);
+                    HandleSignIn(client,newUsername, newPassword);
                     break;
                 case "AdminLOGIN":
                     username = parts[1];
@@ -348,10 +348,14 @@ public class Server
 
     }
 
-    private void HandleSignIn(string username, string password)
+    private void HandleSignIn(TcpClient client,string username, string password)
     {
 
-        playerController.AddPlayer(username, password);
+        if(playerController.AddPlayer(username, password)){
+            SendMessageToClient(client,"success");
+            return;
+        }
+        SendMessageToClient(client,"failed");
 
     }
 

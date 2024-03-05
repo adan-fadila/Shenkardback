@@ -47,7 +47,7 @@ public class Database
             return null; // Or throw the exception if appropriate for your application flow
         }
     }
-    public void openConnectionAndRunQueryWithoutRead(string query)
+    public bool openConnectionAndRunQueryWithoutRead(string query)
     {
         try
         {
@@ -61,11 +61,12 @@ public class Database
 
             // Execute the query and return the data reader
             dbcmd.ExecuteNonQuery();
+            return true;
         }
         catch (Exception ex)
         {
             Console.WriteLine("Error executing query: " + ex.Message);
-
+            return false;
         }
     }
 

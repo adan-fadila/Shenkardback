@@ -46,7 +46,7 @@ public class playerDataAccess
     }
     public int getPlayerId(string name)
     {
-        string query =$"SELECT id FROM players where name = '{name}';";
+        string query = $"SELECT id FROM players where name = '{name}';";
         int id = -1;
         SqliteDataReader reader = database.openConnectionAndRunQuery(query);
         if (reader.Read())
@@ -62,7 +62,7 @@ public class playerDataAccess
 
 
 
- public string getAdminName(int id)
+    public string getAdminName(int id)
     {
         string query = "SELECT name FROM admins where id = " + id + ";";
         string name = "";
@@ -102,7 +102,7 @@ public class playerDataAccess
     }
     public int getAdminId(string name)
     {
-        string query =$"SELECT id FROM admins where name = '{name}';";
+        string query = $"SELECT id FROM admins where name = '{name}';";
         int id = -1;
         SqliteDataReader reader = database.openConnectionAndRunQuery(query);
         if (reader.Read())
@@ -115,10 +115,21 @@ public class playerDataAccess
     }
 
 
-    public void AddPlayer(string name, string pass){
+    public bool AddPlayer(string name, string pass)
+    {
         string query = $"INSERT INTO players (name, password) VALUES ('{name}','{pass}');";
-        database.openConnectionAndRunQueryWithoutRead(query);
-        
+
+        if (database.openConnectionAndRunQueryWithoutRead(query))
+        {
+            database.closeConnection();
+            return true;
+        }
+        database.closeConnection();
+        return false;
+
+
+
+
     }
 
     public bool hasDeck(int id)

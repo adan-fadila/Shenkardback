@@ -33,7 +33,7 @@ class PlayerController
       public Player GetPlayer(int id){
         return playerService.GetPlayer(id);
     }
-    public void AddPlayer(string name, string pass){
-        playerService.AddPlayer(name,pass);
+    public bool AddPlayer(string name, string pass){
+       return playerService.AddPlayer(name,pass);
     }
 }
