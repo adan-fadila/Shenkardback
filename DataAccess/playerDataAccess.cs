@@ -36,11 +36,12 @@ public class playerDataAccess
     {
         string query = $"SELECT password FROM players where name = '{name}';";
         string password = null;
-        IDataReader reader = database.openConnectionAndRunQuery(query);
+        SqliteDataReader reader = database.openConnectionAndRunQuery(query);
         if (reader.Read())
         {
             password = reader.GetString(0);
         }
+        database.closeConnection(reader);
         return password;
 
     }
@@ -87,7 +88,7 @@ public class playerDataAccess
         database.closeConnection(reader);
         return name;
 
-    }
+     }
     public string getAdminPass(string name)
     {
         string query = $"SELECT pass FROM admins where name = '{name}';";

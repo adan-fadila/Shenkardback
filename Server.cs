@@ -53,44 +53,8 @@ public class Server
             int bytesRead = stream.Read(buffer, 0, buffer.Length);
             if (bytesRead == 0)
             {
-                // If bytesRead is 0, it means the client has disconnected
-                Console.WriteLine("Client disconnected.");
-                // Remove the disconnected client from the dictionary
-                int disconnectedPlayerId = clients.FirstOrDefault(x => x.Value == client).Key;
-                Console.WriteLine($"logout: {disconnectedPlayerId}");
-                if (disconnectedPlayerId != 0)
-                {
-                    clients.Remove(disconnectedPlayerId);
-                    // Handle any other cleanup tasks related to the disconnected client
-                    try
-                    {
-                        var keyWithplayerId = games.Keys.FirstOrDefault(key => key.Contains(disconnectedPlayerId));
-                        if (keyWithplayerId != null)
-                        {
-
-                            Game gameToRemove = games[keyWithplayerId];
-                            if (gameToRemove.Players[0].id == disconnectedPlayerId)
-                            {
-
-                                SendMessageToClient(clients[gameToRemove.Players[1].id], "PlayerExit");
-                            }
-                            else
-                            {
-                                SendMessageToClient(clients[gameToRemove.Players[0].id], "PlayerExit");
-                            }
-
-
-                            games.Remove(keyWithplayerId);
-                        }
-                       ;
-                    }
-                    catch (System.Exception)
-                    {
-
-                        Console.WriteLine("no game  for this client");
-                    }
-                }
-                break; // Exit the loop
+                handleDisconnected(client);
+                break;
             }
             string message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
 
@@ -133,7 +97,7 @@ public class Server
                         {
                             int player1Id = waitingPlayerId;
                             int player2Id = playerId;
-                            waitingPlayerId = -1; // Reset waiting player ID for the next game
+                           lock (lockObject) { waitingPlayerId =-1; } // Reset waiting player ID for the next game
 
                             // Ensure to pass the correct player IDs to StartGame
                             StartGame(player1Id, player2Id, clients[player1Id], clients[player2Id]);
@@ -184,7 +148,7 @@ public class Server
                 case "GetCards":
                     SendCards(client);
                     break;
-              
+
                 case "UpdateCard":
                     try
                     {
@@ -207,7 +171,53 @@ public class Server
         }
     }
 
+    private void handleDisconnected(TcpClient client)
+    {
 
+        // If bytesRead is 0, it means the client has disconnected
+        Console.WriteLine("Client disconnected.");
+        // Remove the disconnected client from the dictionary
+        int disconnectedPlayerId = clients.FirstOrDefault(x => x.Value == client).Key;
+        if(waitingPlayerId == disconnectedPlayerId){
+            waitingPlayerId = -1;
+        }
+        Console.WriteLine($"logout: {disconnectedPlayerId}");
+        if (disconnectedPlayerId != 0)
+        {
+            SendMessageToClient(client, "ForceLogOut");
+            clients.Remove(disconnectedPlayerId);
+            // Handle any other cleanup tasks related to the disconnected client
+            try
+            {
+                var keyWithplayerId = games.Keys.FirstOrDefault(key => key.Contains(disconnectedPlayerId));
+                if (keyWithplayerId != null)
+                {
+
+                    Game gameToRemove = games[keyWithplayerId];
+                    if (gameToRemove.Players[0].id == disconnectedPlayerId)
+                    {
+
+                        SendMessageToClient(clients[gameToRemove.Players[1].id], "PlayerExit");
+                    }
+                    else
+                    {
+                        SendMessageToClient(clients[gameToRemove.Players[0].id], "PlayerExit");
+                    }
+
+
+                    games.Remove(keyWithplayerId);
+                }
+               ;
+            }
+            catch (System.Exception)
+            {
+
+                Console.WriteLine("no game  for this client");
+            }
+        }
+
+
+    }
     private void SendCards(TcpClient client)
     {
         List<ICard> cards = cardController.getCards();
@@ -242,9 +252,10 @@ public class Server
         Game game = gameController.askForGame(player1, player2);
         games.Add(new List<int>() { player1, player2 }, game);
         string serializedGameData = setGameData(game, player1, player2);
+        string msg = $"GameData|{serializedGameData}";
         // Send the serialized game data to both players
-        SendMessageToClient(client1, serializedGameData);
-        SendMessageToClient(client2, serializedGameData);
+        SendMessageToClient(client1, msg);
+        SendMessageToClient(client2, msg);
     }
     string setGameData(Game game, int player1, int player2)
     {
@@ -343,9 +354,19 @@ public class Server
         int playerId = playerController.validatePlayer(username, password);
         if (playerId != -1)
         {
+            if (clients.ContainsKey(playerId))
+            {
+
+
+                handleDisconnected(clients[playerId]);
+                clients.Remove(playerId);
+
+            }
             clients.Add(playerId, client);
         }
-        byte[] responseData = Encoding.UTF8.GetBytes(playerId.ToString());
+        string msg = $"LOGIN|{playerId}";
+        byte[] responseData = Encoding.UTF8.GetBytes(msg);
+        
         stream.Write(responseData, 0, responseData.Length);
 
     }
@@ -355,10 +376,10 @@ public class Server
 
         if (playerController.AddPlayer(username, password))
         {
-            SendMessageToClient(client, "success");
+            SendMessageToClient(client, "SignUp|success");
             return;
         }
-        SendMessageToClient(client, "failed");
+        SendMessageToClient(client, "SignUp|failed");
 
     }
 
@@ -447,7 +468,8 @@ public class Server
                     {
 
                         TcpClient client1 = clients[id];
-                        SendMessageToClient(client1, gameData);
+                        SendMessageToClient(client1, $"GameData|{gameData}");
+                        Console.WriteLine(id);
                     }
                 }
                 catch (Exception e)
@@ -460,7 +482,7 @@ public class Server
             {
                 List<int> winners = gameController.startBattle(game);
                 string serializedWinners = JsonSerializer.Serialize(winners);
-                string msg = $"gameEnd|{serializedWinners}";
+                string msg = $"GameEnd|{serializedWinners}";
                 foreach (int id in keyWithplayerId)
                 {
 
