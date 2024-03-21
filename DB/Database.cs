@@ -13,7 +13,8 @@ public class Database
     private Database()
     {
         // Set connection string to your SQLite database
-        connString = "Data Source=DB/shenkard.sqlite;";
+        connString = "Data Source=C:\\database\\shenkard.sqlite;";
+
     }
 
     public static Database getInstance()
